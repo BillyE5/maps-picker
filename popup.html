@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <style>
+    :root { --fg:#1f1f1f; --muted:#5f6368; --line:#e3e3e3; --accent:#1a73e8; --bg:#fff; --hover:#f1f3f4; }
+    @media (prefers-color-scheme: dark) {
+      :root { --fg:#e8eaed; --muted:#9aa0a6; --line:#3c4043; --accent:#8ab4f8; --bg:#202124; --hover:#2d2e31; }
+    }
+    body { margin:0; width:360px; background:var(--bg); color:var(--fg);
+           font:13px/1.4 -apple-system,"PingFang TC","Noto Sans TC",sans-serif; }
+    header { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid var(--line); }
+    h1 { font-size:15px; margin:0; }
+    .count { color:var(--muted); font-weight:normal; }
+    ul { list-style:none; margin:0; padding:0; max-height:400px; overflow:auto; }
+    li { display:flex; gap:8px; align-items:flex-start; padding:10px 14px; border-bottom:1px solid var(--line); }
+    li:hover { background:var(--hover); }
+    .main { flex:1; min-width:0; }
+    .q { color:var(--accent); cursor:pointer; font-weight:600; word-break:break-all; }
+    .q:hover { text-decoration:underline; }
+    .src { display:block; color:var(--muted); font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; text-decoration:none; margin-top:2px; }
+    .src:hover { text-decoration:underline; }
+    .del { all:unset; cursor:pointer; color:var(--muted); padding:0 4px; font-size:16px; line-height:1; }
+    .del:hover { color:#d93025; }
+    .empty { padding:28px 14px; color:var(--muted); text-align:center; }
+    footer { display:flex; gap:6px; padding:10px 14px; flex-wrap:wrap; }
+    footer button { flex:1; padding:7px 8px; border:1px solid var(--line); background:transparent; color:var(--fg);
+                    border-radius:6px; cursor:pointer; font:inherit; white-space:nowrap; }
+    footer button:hover { background:var(--hover); }
+    footer button.primary { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+    header .ocr { padding:6px 10px; border:1px solid var(--accent); color:var(--accent); background:transparent;
+                  border-radius:16px; cursor:pointer; font:inherit; }
+    header .ocr:hover { background:var(--hover); }
+    .langs { display:flex; gap:10px; align-items:center; padding:0 14px 8px; color:var(--muted); font-size:12px; flex-wrap:wrap; }
+    .langs label { display:flex; gap:3px; align-items:center; cursor:pointer; color:var(--fg); }
+    .hint { padding:0 14px 12px; color:var(--muted); font-size:11px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="title">📍 Maps Picker <span class="count" id="count"></span></h1>
+    <button class="ocr" id="ocr" title="框出畫面上的文字（⌥⇧X）">⛶ 框選畫面</button>
+  </header>
+  <ul id="list"></ul>
+  <footer id="actions">
+    <button class="primary" id="openAll" title="每個地點開一個分頁，逐一按「儲存」">全部開啟</button>
+    <button id="export" title="匯出 CSV，可匯入 Google 我的地圖">匯出 CSV</button>
+    <button id="clear">清空</button>
+  </footer>
+  <div class="langs"><label title="反白和框選時多一個「＋ 存」按鈕，先收集起來最後再一次開地圖或匯出 CSV"><input type="checkbox" id="saveList">啟用「＋ 存」待存清單</label></div>
+  <div class="langs" id="langs" title="主要辨識已自動支援中日英文；這裡只影響認不出來時的備援辨識">備援辨識語言：
+    <label><input type="checkbox" value="eng">英文/拉丁</label>
+    <label><input type="checkbox" value="chi_tra">繁中</label>
+    <label><input type="checkbox" value="jpn">日文</label>
+  </div>
+  <div class="langs" id="dirs">文字方向：
+    <label><input type="radio" name="dir" value="auto">自動</label>
+    <label><input type="radio" name="dir" value="h">橫書</label>
+    <label><input type="radio" name="dir" value="v">直書</label>
+  </div>
+  <div class="hint">反白文字 → 📍地圖 / ⧉複製　｜　⌥⇧M 開地圖、⌥⇧X 框選畫面</div>
+  <script src="popup.js"></script>
+</body>
+</html>
