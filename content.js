@@ -31,6 +31,7 @@
       .bar { display:flex; gap:2px; background:#fff; border-radius:18px; padding:3px;
              box-shadow:0 2px 10px rgba(0,0,0,.25); font:13px/1 -apple-system,"PingFang TC","Noto Sans TC",sans-serif; }
       button { all:unset; cursor:pointer; padding:6px 10px; border-radius:15px; color:#1f1f1f; white-space:nowrap; }
+      button[data-act="search"] img { width:16px; height:16px; display:block; }
       button:hover { background:#e8f0fe; color:#1a73e8; }
       .toast { position:fixed; left:50%; bottom:40px; transform:translateX(-50%); background:#202124; color:#fff;
                padding:10px 16px; border-radius:8px; font:14px -apple-system,"PingFang TC",sans-serif;
@@ -42,12 +43,12 @@
       <button data-act="open" title="在 Google Maps 開啟">📍 地圖</button>
       <button data-act="save" title="存進清單，之後再處理">＋ 存</button>
       <button data-act="copy" title="複製文字">⧉ 複製</button>
+      <button data-act="search" title="在 Google 搜尋">Google</button>
     </div>
     <div class="toast"></div>
   `;
   const bar = shadow.querySelector(".bar");
   const toastEl = shadow.querySelector(".toast");
-  let currentText = "";
 
   function mount() {
     if (!host.isConnected) (document.body || document.documentElement).appendChild(host);
@@ -113,6 +114,8 @@
     } else if (act === "copy") {
       await copyText(currentText);
       toast("已複製 ✓");
+    } else if (act === "search") {
+      chrome.runtime.sendMessage({ type: "search", text: currentText });
     }
   });
 
@@ -161,6 +164,7 @@
       .note { color:#5f6368; font-size:11px; margin:4px 2px 8px; }
       .btns { display:flex; gap:6px; }
       button { all:unset; cursor:pointer; padding:7px 12px; border-radius:16px; border:1px solid #dadce0; white-space:nowrap; text-align:center; }
+      button[data-act="search"] img { width:16px; height:16px; display:block; }
       button:hover { background:#f1f3f4; }
       button.primary { background:#1a73e8; color:#fff; border-color:#1a73e8; }
       button.primary:hover { background:#1765cc; }
@@ -179,6 +183,7 @@
           <button class="primary" data-act="open">📍 地圖</button>
           <button data-act="save" title="存進清單，之後再處理">＋ 存</button>
           <button data-act="copy" title="複製文字">⧉ 複製</button>
+          <button data-act="search" title="在 Google 搜尋">Google</button>
           <span class="spacer"></span>
           <button data-act="again" title="重新框選">重框</button>
           <button data-act="close" title="關閉 (Esc)">✕</button>
@@ -318,6 +323,10 @@
       await copyText(text, () => textEl.select());
       btn.textContent = "已複製 ✓";
       setTimeout(() => { btn.textContent = "⧉ 複製"; }, 1200);
+    } else if (act === "search" && text) {
+      chrome.runtime.sendMessage({ type: "search", text });
+      closeOcr();
+      toast("已開啟 Google 搜尋");
     } else if (act === "again") {
       startRegion();
     } else if (act === "close") {

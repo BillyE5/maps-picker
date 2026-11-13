@@ -126,6 +126,10 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   } else if (msg.type === "start-region") {
     // 從工具列彈出視窗啟動
     chrome.tabs.query({ active: true, currentWindow: true }).then(([tab]) => startRegion(tab));
+  } else if (msg.type === "search") {
+    const q = cleanQuery(msg.text);
+    if (!q) return;
+    chrome.tabs.create({ url: "https://www.google.com/search?q=" + encodeURIComponent(q) });
   } else if (msg.type === "ocr-capture") {
     ocrCapture(sender.tab, msg.rect, msg.viewport).then(sendResponse, (e) =>
       sendResponse({ ok: false, error: friendlyError(e) })
