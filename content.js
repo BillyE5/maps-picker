@@ -198,7 +198,10 @@
 
   function pauseVideos() {
     for (const v of document.querySelectorAll("video")) {
-      if (!v.paused) { v.pause(); pausedVideos.push(v); }
+      if (!pausedVideos.includes(v)) {
+        pausedVideos.push(v);
+        v.pause();
+      }
     }
   }
   function resumeVideos() {
